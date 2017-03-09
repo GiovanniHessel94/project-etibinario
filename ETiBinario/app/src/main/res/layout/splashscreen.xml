@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#13557d">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/eti" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="15dp"/>
+
+    <TextView
+        android:id="@+id/txtLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Carregando"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:textColor="#ffffff"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="30dp"/>
+
+    <ProgressBar
+        android:id="@+id/prgs"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.DeviceDefault.ProgressBar.Horizontal"
+        android:progress="0"
+        android:max="100"
+        android:layout_gravity="center"/>
+
+</LinearLayout>
