@@ -1,11 +1,14 @@
 package br.com.essentialstech.etibinario;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import static br.com.essentialstech.etibinario.R.id.btnConv;
 
 /**
  * Created by Giovanni Hessel on 05/03/2017.
@@ -14,9 +17,14 @@ import android.widget.TextView;
 public class MainCode extends Activity {
     private EnumNum convTipo;
     private EditText editDec;
+    private TextView txtDec;
     private EditText editBin;
+    private TextView txtBin;
     private EditText editOct;
+    private TextView txtOct;
     private EditText editHex;
+    private TextView txtHex;
+    private Button btnConv;
     private int numConv;
     private int numResult;
     private StringBuilder result = new StringBuilder();
@@ -29,8 +37,9 @@ public class MainCode extends Activity {
     }
     //Método de inicialização dos componenetes
     private void iniciaComponentes(){
-        //Inicializa a editbox Decimal com um "sensor" de mudança de foco
-        editDec = (EditText)findViewById(R.id.etxtDec);
+        //Inicializa os componentes da parte Decimal com um "sensor" de mudança de foco
+        txtDec = (TextView)findViewById(R.id.txtDec);
+        editDec = (EditText)findViewById(R.id.editDec);
         editDec.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -38,11 +47,17 @@ public class MainCode extends Activity {
                 //a Decimal para a váriavel da classe EnumNum
                 if(hasFocus){
                     convTipo = EnumNum.Dec;
+                    editDec.setTextSize(19);
+                    txtDec.setTextSize(24);
+                }else{
+                    editDec.setTextSize(15);
+                    txtDec.setTextSize(20);
                 }
             }
         });
-        //Inicializa a editbox Binario com um "sensor" de mudança de foco
-        editBin = (EditText)findViewById(R.id.etxtBin);
+        //Inicializaos os componentes da parte Binaria com um "sensor" de mudança de foco
+        txtBin = (TextView)findViewById(R.id.txtBin);
+        editBin = (EditText)findViewById(R.id.editBin);
         editBin.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -50,11 +65,18 @@ public class MainCode extends Activity {
                 //a Binário para a váriavel da classe EnumNum
                 if(hasFocus){
                     convTipo = EnumNum.Bin;
+                    editBin.setTextSize(19);
+                    txtBin.setTextSize(24);
+                }else
+                {
+                    editBin.setTextSize(15);
+                    txtBin.setTextSize(20);
                 }
             }
         });
-        //Inicializa a editbox Octal com um "sensor" de mudança de foco
-        editOct = (EditText)findViewById(R.id.etxtOct);
+        //Inicializa os componentes da parte Octal com um "sensor" de mudança de foco
+        txtOct = (TextView)findViewById(R.id.txtOct);
+        editOct = (EditText)findViewById(R.id.editOct);
         editOct.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -62,11 +84,18 @@ public class MainCode extends Activity {
                 //a Octal para a váriavel da classe EnumNum
                 if(hasFocus){
                     convTipo = EnumNum.Oct;
+                    editOct.setTextSize(19);
+                    txtOct.setTextSize(24);
+                }else
+                {
+                    editOct.setTextSize(15);
+                    txtOct.setTextSize(20);
                 }
             }
         });
-        //Inicializa a editbox Hexadecimal com um "sensor" de mudança de foco
-        editHex = (EditText)findViewById(R.id.etxtHex);
+        //Inicializa os componentes da parte Hexadecimal com um "sensor" de mudança de foco
+        txtHex = (TextView)findViewById(R.id.txtHex);
+        editHex = (EditText)findViewById(R.id.editHex);
         editHex.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -74,12 +103,18 @@ public class MainCode extends Activity {
                 //a Hexadecimal para a váriavel da classe EnumNum
                 if(hasFocus){
                     convTipo = EnumNum.Hex;
+                    editHex.setTextSize(19);
+                    txtHex.setTextSize(24);
+                }else
+                {
+                    editHex.setTextSize(15);
+                    txtHex.setTextSize(20);
                 }
             }
         });
         //Iinicializa o botão de conversão com um "sensor" de click
         //que aciona o método converter
-        Button btnConv = (Button)findViewById(R.id.btnConv);
+        btnConv = (Button)findViewById(R.id.btnConv);
         btnConv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +135,10 @@ public class MainCode extends Activity {
             do{
                 result.append(numResult%2);
                 numResult /= 2;
-            }while((numResult%2) != 0 || (numResult/2) != 0);
+                if(numResult == 1){
+                    result.append(numResult);
+                }
+            }while(numResult > 1);
             //Mostra o resultado na editbox Binário
             editBin.setText(result.reverse().toString());
             //Processamento necessário para transformar o número em Octal
@@ -120,7 +158,9 @@ public class MainCode extends Activity {
             }else{
                 result.delete(0, result.length());
                 numResult = numConv;
-                result.append(numResult/16);
+                if(numResult > 15) {
+                    result.append(numResult / 16);
+                }
                 numResult%=16;
                 if(numResult > 9 && numResult <= 15){
                     if(numResult == 10){
