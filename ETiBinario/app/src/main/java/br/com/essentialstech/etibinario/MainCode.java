@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.lang.reflect.Array;
 
 import static br.com.essentialstech.etibinario.R.id.btnConv;
 
@@ -25,8 +28,8 @@ public class MainCode extends Activity {
     private EditText editHex;
     private TextView txtHex;
     private Button btnConv;
+    private Toast toast;
     private int numConv;
-    private int numResult;
     private StringBuilder result = new StringBuilder();
     //
     //Método OnCreate
@@ -112,7 +115,7 @@ public class MainCode extends Activity {
                 }
             }
         });
-        //Iinicializa o botão de conversão com um "sensor" de click
+        //Inicializa o botão de conversão com um "sensor" de click
         //que aciona o método converter
         btnConv = (Button)findViewById(R.id.btnConv);
         btnConv.setOnClickListener(new View.OnClickListener() {
@@ -124,70 +127,172 @@ public class MainCode extends Activity {
     }
 
     private void converter(){
-        //Limpa a String Resultado
-        result.delete(0, result.length());
         //Verifica qual conversão será feita
         if(convTipo == EnumNum.Dec){
-            //Recupera o valor da editbox Decimal, e passa para as variaveis
-            numConv = Integer.valueOf(editDec.getEditableText().toString());
-            numResult = numConv;
-            //Processamento necessário para transformar o número em Binário
-            do{
-                result.append(numResult%2);
-                numResult /= 2;
-                if(numResult == 1){
-                    result.append(numResult);
-                }
-            }while(numResult > 1);
-            //Mostra o resultado na editbox Binário
-            editBin.setText(result.reverse().toString());
-            //Processamento necessário para transformar o número em Octal
-            if(numConv >= 0 && numConv<= 7){
+            //Verifica se a caixa de texto está vazia
+            //Verifica se o número inserido está dentro do limite suportado
+            if(editDec.getEditableText().toString().length() == 0){
+                toast = Toast.makeText(getApplicationContext(), "Insíra um valor Decimal.", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }else if(editDec.getEditableText().toString().length() > 9){
+                toast = Toast.makeText(getApplicationContext(), "Insíra um valor Decimal até 999.999.999.", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }else {
+                //Recupera o valor da editbox Decimal, e passa para as variaveis
+                numConv = Integer.valueOf(editDec.getEditableText().toString());
+                //Aciona o metodo de Conversão
+                decBase(numConv, (byte)2);
                 //Mostra o resultado na editbox Binário
-                editOct.setText(String.valueOf(numConv));
-            }else{
-                result.delete(0,result.length());
-                numResult = numConv;
-                result.append(numResult/8);
-                result.append(numResult%8);
-                //Mostra o resultado na editbox Octal
-                editOct.setText(result.toString());
-            }
-            if(numConv >= 0 && numConv <= 9){
-                editHex.setText(String.valueOf(numConv));
-            }else{
-                result.delete(0, result.length());
-                numResult = numConv;
-                if(numResult > 15) {
-                    result.append(numResult / 16);
+                editBin.setText(result.reverse().toString());
+                //Processamento necessário para transformar o número Decimal em Octal
+                if (numConv >= 0 && numConv <= 7) {
+                    //Mostra o resultado na editbox Octal
+                    editOct.setText(String.valueOf(numConv));
+                } else {
+                    //Aciona o método de Conversão
+                    decBase(numConv, (byte)8);
+                    //Mostra o resultado na editbox Octal
+                    editOct.setText(result.reverse().toString());
+                }//Processamento necessário para transformar o número Decimal em Hexadecimal
+                if (numConv >= 0 && numConv <= 9) {
+                    //Mostra o resultado na editbox Octal
+                    editHex.setText(String.valueOf(numConv));
+                } else {
+                    //Aciona o método de Conversão
+                    decBase(numConv, (byte)16);
+                    //Mostra o resultado na editbox Hexadecimal
+                    editHex.setText(result.reverse().toString());
                 }
-                numResult%=16;
-                if(numResult > 9 && numResult <= 15){
-                    if(numResult == 10){
-                        result.append("A");
-                    }else if(numResult == 11){
-                        result.append("B");
-                    }else if(numResult == 12){
-                        result.append("C");
-                    }else if(numResult == 13){
-                        result.append("D");
-                    }else if(numResult == 14){
-                        result.append("E");
-                    }else{
-                        result.append("F");
-                    }
-                }else{
-                    result.append(numResult);
-                }
-                //Mostra o resultado na editbox Hexadecimal
-                editHex.setText(result.toString());
             }
         }else if(convTipo == EnumNum.Bin){
-            editBin.setText("FunfouBin", TextView.BufferType.EDITABLE);
+            //Verifica se a caixa de texto está vazia
+            //Verifica se o número inserido está dentro do limite suportado
+            if(editBin.getEditableText().toString().length() == 0){
+                toast = Toast.makeText(getApplicationContext(), "Insíra um valor Binário.", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }else if(editDec.getEditableText().toString().length() > 9){
+                toast = Toast.makeText(getApplicationContext(), "Insíra um valor Binário de até 30 digitos.", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }else {
+                editBin.setText("FunfouBin", TextView.BufferType.EDITABLE);
+            }
         }else if(convTipo == EnumNum.Oct){
-            editOct.setText("FunfouOct", TextView.BufferType.EDITABLE);
+            //Verifica se a caixa de texto está vazia
+            //Verifica se o número inserido está dentro do limite suportado
+            if(editDec.getEditableText().toString().length() == 0){
+                toast = Toast.makeText(getApplicationContext(), "Insíra um valor Octal.", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }else if(editDec.getEditableText().toString().length() > 11){
+                toast = Toast.makeText(getApplicationContext(), "Insíra um valor Octa de até 11 digitos.", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }else {
+                editOct.setText("FunfouOct", TextView.BufferType.EDITABLE);
+            }
         }else{
-            editHex.setText("FunfouHex", TextView.BufferType.EDITABLE);
+            //Verifica se a caixa de texto está vazia
+            //Verifica se o número inserido está dentro do limite suportado
+            if(editDec.getEditableText().toString().length() == 0){
+                toast = Toast.makeText(getApplicationContext(), "Insíra um valor Hexadecimal", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }else{
+                editHex.setText("FunfouHex", TextView.BufferType.EDITABLE);
+            }
         };
+    }
+    //Teorema fundamental da numeração
+    //Converte da base(2, 8, 16) para número Decimal
+    private void baseDec(String num, byte base){
+        //Declaração das variáveis do método
+        byte dig, x;
+        int[] soma = new int[num.length()+1];
+        //Lógica
+        limpaResult();
+        for(x = 0; x < num.length(); x++){
+            dig = tratarDig(String.valueOf(num.charAt(num.length()-x)));
+            soma[x] = (dig+((int)Math.pow(base, x)));
+        }
+        for(x = 0; x < soma.length ; x++){
+            soma[soma.length+1] += soma[x];
+        }
+        result.append(soma[soma.length + 1]);
+    }
+    //Teorema fundamental da numeração
+    //Converte da base(2, 8, 16) para número Decimal(Conversão 8 digitos Hexadecimal)
+    private void baseDecMax(String num, byte base){
+        //Declaração das variáveis do método
+        byte dig, x;
+        long[] soma = new long[num.length()+1];
+        //Lógica
+        limpaResult();
+        for(x = 0; x < num.length(); x++){
+            dig = tratarDig(String.valueOf(num.charAt(num.length()-x)));
+            soma[x] = (dig+((long)Math.pow(base, x)));
+        }
+        for(x = 0; x < soma.length ; x++){
+            soma[soma.length+1] += soma[x];
+        }
+        result.append(soma[soma.length + 1]);
+    }
+    //Converte os números Decimais para as bases 2, 8, 16
+    private void decBase(int num, byte base){
+        limpaResult();
+        do{
+            this.result.append(tratarNum(num%base));
+            num /= base;
+            if(num < base && num != 0){
+                this.result.append(tratarNum(num));
+            }
+        }while(num >= base);
+    }
+    //Trata o digito p/ caso ele seja Hexadecimal
+    private byte tratarDig(String dig){
+        try{
+            return Byte.valueOf(dig);
+        }catch (Exception ex){
+            if(dig.toUpperCase().equals("A")){
+                return 10;
+            }else if(dig.toUpperCase().equals("B")){
+                return 11;
+            }else if(dig.toUpperCase().equals("C")){
+                return 12;
+            }else if(dig.toUpperCase().equals("D")){
+                return 13;
+            }else if(dig.toUpperCase().equals("E")){
+                return 14;
+            }else{
+                return 15;
+            }
+        }
+    }
+    //Trata o numero caso ele seja Hexadecimal
+    private String tratarNum(int num){
+        if(num > 9){
+            if (num == 10) {
+                return "A";
+            } else if (num == 11) {
+                return "B";
+            } else if (num == 12) {
+                return "C";
+            } else if (num == 13) {
+                return "D";
+            } else if (num == 14) {
+                return "E";
+            } else {
+                return "F";
+            }
+        }else{
+            return String.valueOf(num);
+        }
+    }
+    //Limpa nossa string que guarda o resultado;
+    private void limpaResult(){
+        this.result.delete(0, result.length());
     }
 }
