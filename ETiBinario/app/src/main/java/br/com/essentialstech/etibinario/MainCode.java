@@ -30,6 +30,7 @@ public class MainCode extends Activity {
     private Button btnConv;
     private Toast toast;
     private int numConv;
+    private long numConvLong;
     private StringBuilder result = new StringBuilder();
     //
     //Método OnCreate
@@ -202,8 +203,8 @@ public class MainCode extends Activity {
                 toast = Toast.makeText(getApplicationContext(), "Insíra um valor Octal.", Toast.LENGTH_SHORT);
                 toast.show();
                 return;
-            }else if(editOct.getEditableText().toString().length() > 11){
-                toast = Toast.makeText(getApplicationContext(), "Insíra um valor Octa de até 11 digitos.", Toast.LENGTH_SHORT);
+            }else if(editOct.getEditableText().toString().length() > 10){
+                toast = Toast.makeText(getApplicationContext(), "Insíra um valor Octa de até 10 digitos.", Toast.LENGTH_SHORT);
                 toast.show();
                 return;
             }else {
@@ -233,15 +234,15 @@ public class MainCode extends Activity {
                 //Recupera o valor da editBox Hexadecimal e transforma em Decimal
                 baseDec(editHex.getEditableText().toString(), (byte)16);
                 //Coloca o valor da nossa String de resultado para váriável
-                numConv = Integer.valueOf(result.toString());
+                numConvLong = Long.valueOf(result.toString());
                 //Mostra o resultado na editbox Decimal
                 editDec.setText(result.toString(), TextView.BufferType.EDITABLE);
                 //Transforma o valor da varíavel em Binário
-                decBase(numConv, (byte)2);
+                decBase(numConvLong, (byte)2);
                 //Mostra o resultado na editbox Binário
                 editBin.setText(result.toString(), TextView.BufferType.EDITABLE);
                 //Transforma o valor da varíavel em Octal
-                decBase(numConv, (byte)8);
+                decBase(numConvLong, (byte)8);
                 //Mostra o resultado na editBox Octal
                 editOct.setText(result.toString(), TextView.BufferType.EDITABLE);
             }
@@ -301,6 +302,18 @@ public class MainCode extends Activity {
         }while(num >= base);
         result.reverse();
     }
+    //Converte os números Decimais para as bases 2, 8, 16 número long
+    private void decBase(long num, byte base){
+        limpaResult();
+        do{
+            this.result.append(tratarNum(num%base));
+            num /= base;
+            if(num < base && num != 0){
+                this.result.append(tratarNum(num));
+            }
+        }while(num >= base);
+        result.reverse();
+    }
     //Trata o digito p/ caso ele seja Hexadecimal
     private byte tratarDig(String dig){
         try{
@@ -323,6 +336,26 @@ public class MainCode extends Activity {
     }
     //Trata o numero caso ele seja Hexadecimal
     private String tratarNum(int num){
+        if(num > 9){
+            if (num == 10) {
+                return "A";
+            } else if (num == 11) {
+                return "B";
+            } else if (num == 12) {
+                return "C";
+            } else if (num == 13) {
+                return "D";
+            } else if (num == 14) {
+                return "E";
+            } else {
+                return "F";
+            }
+        }else{
+            return String.valueOf(num);
+        }
+    }
+    //Trata o numero caso ele seja Hexadecimal número long
+    private String tratarNum(long num){
         if(num > 9){
             if (num == 10) {
                 return "A";
