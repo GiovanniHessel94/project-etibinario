@@ -7,4 +7,4 @@ It main purpose was to apply the knowledge about binary conversion and to make m
 ## Author
 
 Giovanni Hessel\
-[@Linkedin](https://www.linkedin.com/in/giovanni-garcia-hessel-137b1393/))
+[@Linkedin](https://www.linkedin.com/in/giovanni-garcia-hessel-137b1393/)
